@@ -7,6 +7,6 @@ class Map:
     
     def render(self):
         for row in self.tiles:
-            for tile in self.tiles:
+            for tile in row:
                 tile.render()
     
