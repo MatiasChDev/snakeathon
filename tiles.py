@@ -1,17 +1,10 @@
 import pygame
+import colors
 class State:
     ALIVE = 0
     CRASHED = 1
     FELL = 2
     HIT = 3
-
-class COLOUR:
-    blue = (0, 0, 255)
-    red = (255, 0, 0)
-    black = (0, 0, 0)
-    grey = (100,100,100)
-    white = (255, 255, 255)
-    brown = (155,103,60)
 
 class Tile:
     """A tile with x and y position"""
@@ -46,7 +39,7 @@ class Base(Tile):
 class Wall(Tile):
     """An actual wall"""
     def __init__(self,x,y,z) -> None:
-        super().__init__(x,y,z,COLOUR.black)
+        super().__init__(x,y,z,colors.black)
 
 
 DIRECTIONS = {
@@ -61,7 +54,7 @@ class Stair(Base):
     
 
     def __init__(self, x, y, z, dir) -> None:
-        super().__init__(x,y,z, COLOUR.grey)
+        super().__init__(x,y,z, colors.grey)
         self.dir = dir # From lower to upper elevation (e.g. "UP" has the lower level under it)
     def allow_through(self, snake):
         return super().allow_through(snake) and (snake.direction % 2) == (self.direction % 2)
@@ -72,7 +65,7 @@ class Stair(Base):
 class Bridge(Base):
     """A Bridge"""
     def __init__(self, x, y, z, dir) -> None:
-        super().__init__(x,y,z,COLOUR.brown)
+        super().__init__(x,y,z,colors.brown)
         self.dir = dir # UP/DOWN and LEFT/RIGHT are the same
     def allow_through(self, snake):
         return True
