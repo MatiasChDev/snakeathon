@@ -42,6 +42,8 @@ def gameLoop():
     xChange = 0
     yChange = 0
     
+    lastCommand = None
+    
     snake_list = []
     lengthOfSnake = 1
     
@@ -73,18 +75,22 @@ def gameLoop():
             if event.type == pygame.QUIT:
                 game_over = True
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT and lastCommand != pygame.K_RIGHT:
                     xChange = -tileSize
                     yChange = 0
-                if event.key == pygame.K_RIGHT:
+                    lastCommand = pygame.K_LEFT
+                if event.key == pygame.K_RIGHT and lastCommand != pygame.K_LEFT:
                     xChange = tileSize
                     yChange = 0
-                if event.key == pygame.K_UP:
+                    lastCommand = pygame.K_RIGHT
+                if event.key == pygame.K_UP and lastCommand != pygame.K_DOWN:
                     xChange = 0
+                    lastCommand = pygame.K_UP
                     yChange = -tileSize
-                if event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN and lastCommand != pygame.K_UP:
                     xChange = 0
                     yChange = tileSize
+                    lastCommand = pygame.K_DOWN
 
         xPos += xChange
         yPos += yChange
@@ -97,13 +103,11 @@ def gameLoop():
         snake_head.append(xPos)
         snake_head.append(yPos)
         snake_list.append(snake_head)
-        print(snake_list)
         if len(snake_list) > lengthOfSnake:
             del snake_list[0]
-        for part in snake_list[:-1]:
-            if part == snake_head:
-                game_close = True
         
+        if snake_head in snake_list[:-1]:
+            game_lost=True
         draw_snake(tileSize, snake_list)
         
         pygame.display.update()
