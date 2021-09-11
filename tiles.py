@@ -1,3 +1,4 @@
+import pygame
 class State:
     ALIVE = 0
     CRASHED = 1
@@ -29,7 +30,9 @@ class Tile:
         snake_z =  snake.get_elevation()
         if snake_z > self.z and not self.allow_fall():
             return State.FELL
-        pass
+    
+    def render(self, display):
+        pygame.draw.rect(display, self.colour, [self.x*20, self.y*20, 20, 20])
 
 class Base(Tile):
     """The base tile"""
