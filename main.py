@@ -18,11 +18,12 @@ clock = pygame.time.Clock()
 
 def draw_snake(tileSize, snake_list):
     for x in snake_list:
-        pygame.draw.rect(display, black, [x[0], x[1], tileSize, tileSize])
+        pygame.draw.rect(display, black, [x[0]+1, x[1]+1, tileSize-2, tileSize-2])
 
 def message(text, color):
     msg = font.render(text, True, color)
-    display.blit(msg, [display_width/2, display_height/2])
+    msg_rect = msg.get_rect(center=(display_width/2, display_height/2))
+    display.blit(msg, msg_rect)
 
 def gameLoop():
     game_over = False
@@ -44,7 +45,7 @@ def gameLoop():
 
     while not game_over:
 
-        if (xPos >= display_width or xPos <= 0 or yPos >= display_height or yPos <= 0):
+        if (xPos >= display_width or xPos < 0 or yPos >= display_height or yPos < 0):
             game_lost = True
         
         while game_lost == True:
@@ -93,7 +94,7 @@ def gameLoop():
         display.fill(blue)
               
         # Draw food
-        pygame.draw.rect(display, red, [xFoodPos, yFoodPos, tileSize, tileSize])
+        pygame.draw.rect(display, red, [xFoodPos+1, yFoodPos+1, tileSize-2, tileSize-2])
         snake_head = []
         snake_head.append(xPos)
         snake_head.append(yPos)
