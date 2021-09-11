@@ -35,7 +35,6 @@ def gameLoop():
     
     lastCommand = None
     
-    queue = []
     snake_list = []
     lengthOfSnake = 1
     
@@ -67,26 +66,23 @@ def gameLoop():
             if event.type == pygame.QUIT:
                 game_over = True
             if event.type == pygame.KEYDOWN:
-                queue.append(event.key)
+                if event.key == pygame.K_LEFT and lastCommand != pygame.K_RIGHT:
+                    xChange = -tileSize
+                    yChange = 0
+                    lastCommand = pygame.K_LEFT
+                if event.key == pygame.K_RIGHT and lastCommand != pygame.K_LEFT:
+                    xChange = tileSize
+                    yChange = 0
+                    lastCommand = pygame.K_RIGHT
+                if event.key == pygame.K_UP and lastCommand != pygame.K_DOWN:
+                    xChange = 0
+                    lastCommand = pygame.K_UP
+                    yChange = -tileSize
+                if event.key == pygame.K_DOWN and lastCommand != pygame.K_UP:
+                    xChange = 0
+                    yChange = tileSize
+                    lastCommand = pygame.K_DOWN
 
-        if len(queue) != 0:
-            if queue[0] == pygame.K_LEFT and lastCommand != pygame.K_RIGHT:
-                xChange = -tileSize
-                yChange = 0
-                lastCommand = pygame.K_LEFT
-            if queue[0] == pygame.K_RIGHT and lastCommand != pygame.K_LEFT:
-                xChange = tileSize
-                yChange = 0
-                lastCommand = pygame.K_RIGHT
-            if queue[0] == pygame.K_UP and lastCommand != pygame.K_DOWN:
-                xChange = 0
-                lastCommand = pygame.K_UP
-                yChange = -tileSize
-            if queue[0] == pygame.K_DOWN and lastCommand != pygame.K_UP:
-                xChange = 0
-                yChange = tileSize
-                lastCommand = pygame.K_DOWN
-            del queue[0]
         xPos += xChange
         yPos += yChange
 
