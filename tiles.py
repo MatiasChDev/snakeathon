@@ -4,12 +4,21 @@ class State:
     FELL = 2
     HIT = 3
 
+class COLOUR:
+    blue = (0, 0, 255)
+    red = (255, 0, 0)
+    black = (0, 0, 0)
+    grey = (100,100,100)
+    white = (255, 255, 255)
+    brown = (155,103,60)
+
 class Tile:
     """A tile with x and y position"""
     def __init__(self,x,y,z, colour) -> None:
         self.x = x
         self.y = y
         self.z = z
+        self.colour = colour
     def allow_fall(self,snake):
         return False
     def allow_through(self,snake):
@@ -24,8 +33,8 @@ class Tile:
 
 class Base(Tile):
     """The base tile"""
-    def __init__(self,x,y,z) -> None:
-        super().__init__(x,y,z,False)
+    def __init__(self,x,y,z,colour) -> None:
+        super().__init__(x,y,z,colour)
 
     def allow_through(self,snake):
         return snake.get_elevation() >= self.z
@@ -34,7 +43,7 @@ class Base(Tile):
 class Wall(Tile):
     """An actual wall"""
     def __init__(self,x,y,z) -> None:
-        super().__init__(x,y,z,True)
+        super().__init__(x,y,z,COLOUR.black)
 
 
 DIRECTIONS = {
@@ -49,7 +58,7 @@ class Stair(Base):
     
 
     def __init__(self, x, y, z, dir) -> None:
-        super().__init__(x,y,z)
+        super().__init__(x,y,z, COLOUR.grey)
         self.dir = dir # From lower to upper elevation (e.g. "UP" has the lower level under it)
     def allow_through(self, snake):
         return super().allow_through(snake) and (snake.direction % 2) == (self.direction % 2)
@@ -60,7 +69,7 @@ class Stair(Base):
 class Bridge(Base):
     """A Bridge"""
     def __init__(self, x, y, z, dir) -> None:
-        super().__init__(x,y,z)
+        super().__init__(x,y,z,COLOUR.brown)
         self.dir = dir # UP/DOWN and LEFT/RIGHT are the same
     def allow_through(self, snake):
         return True
