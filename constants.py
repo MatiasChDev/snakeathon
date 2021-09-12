@@ -1,5 +1,5 @@
-display_width = 800
-display_height = 600
+display_width = 400
+display_height = 400
 tileSize = 20
 gameSpeed = 10
 fov = 180
