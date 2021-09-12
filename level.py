@@ -16,7 +16,8 @@ class Level:
     tick = 0
     def __init__(self, name, map_name) -> None:
         self.name = name
-        self.map = map_from_csv(map_name + ".csv")
+        self.map_name = map_name + ".csv"
+        self.map = map_from_csv(self.map_name)
         
         self.status = RUNNING
         self.start()
@@ -56,6 +57,7 @@ class Level:
         pygame.display.update()
 
     def reset_level(self):
+        self.map = map_from_csv(self.map_name)
         self.snake.return_to_initial()
         self.map.render(self.display)
         pygame.display.update()
