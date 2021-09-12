@@ -138,9 +138,9 @@ class Level:
             time_delta = self.clock.tick(60)/1000.0
             # window_surface.fill(black)
             font = pygame.font.SysFont(None, 25)
-            msg1 = font.render("You lost! Press Q to quit, or SPACE to play again", True, blue)
+            msg1 = font.render("You lost! Press Q to quit, or SPACE to play again", True, white)
             msg_rect1 = msg1.get_rect(center=(display_width/2 + 50, display_height/2))
-            msg2 = font.render("Score: " + str(len(self.snake.positions)), True, blue)
+            msg2 = font.render("Score: " + str(len(self.snake.positions)), True, white)
             msg_rect2 = msg2.get_rect(center=(display_width/2 + 50, display_height/2+150))
             self.display.blit(self.background, (0, 0))
             self.display.blit(msg1, msg_rect1)
