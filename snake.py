@@ -64,3 +64,4 @@ class Snake:
     def render(self):
         for position in self.positions:
             pygame.draw.rect(self.display, colors.blue, constants.position_to_pixel(position,1))
+        

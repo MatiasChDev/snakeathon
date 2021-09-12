@@ -126,7 +126,7 @@ class Level:
         next_position = self.snake.get_next_position()
         next_tile = self.tile_at(next_position[0],next_position[1])
         print(next_tile)
-        if not next_tile.allow_through(self.snake):
+        if (not next_tile.allow_through(self.snake)) or (self.snake.direction is not None and next_position in self.snake.positions):
             self.status = LOST
             self.game_lost_screen()
             return 0
