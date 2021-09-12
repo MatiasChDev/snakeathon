@@ -22,7 +22,8 @@ class Snake:
     
     def get_elevation(self):
         return self.z
-    def return_to_initial(self):
+    def return_to_initial(self, new_initial):
+        self.initial_position = new_initial
         self.positions = [self.initial_position]
         self.head_position = self.initial_position
         self.status = ALIVE

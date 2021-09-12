@@ -1,8 +1,9 @@
-from pygame import display
+from pygame import mixer
 from snake import Snake
 from maps import *
 from constants import *
 import colors, random
+
 
 
 # STATUSES
@@ -57,7 +58,7 @@ class Level:
 
     def reset_level(self):
         self.map = map_from_csv()
-        self.snake.return_to_initial()
+        self.snake.return_to_initial((int(self.map.tile_width / 2), int(self.map.tile_height / 2)))
         self.map.render(self.display)
         self.display = pygame.display.set_mode((self.map.width, self.map.height))
         self.background = pygame.Surface((self.map.width, self.map.height))
@@ -132,22 +133,30 @@ class Level:
             self.game_lost_screen()
             return 0
         eaten = (next_position[0] == self.xFoodPos) and (next_position[1] == self.yFoodPos)
+        if eaten:
+            food = mixer.Sound("food.wav")
+            food.play()
         self.snake.move(eaten)
         self.re_render_objects(eaten)
         self.clock.tick(gameSpeed)
 
     def game_lost_screen(self):
+        death = mixer.Sound("death.wav")
+        death.play()
         while self.status == LOST:
-            time_delta = self.clock.tick(60)/1000.0
             # window_surface.fill(black)
             font = pygame.font.SysFont(None, 25)
-            msg1 = font.render("You lost! Press Q to quit, or SPACE to play again", True, white)
-            msg_rect1 = msg1.get_rect(center=(display_width/2 + 50, display_height/2))
-            msg2 = font.render("Score: " + str(len(self.snake.positions)), True, white)
-            msg_rect2 = msg2.get_rect(center=(display_width/2 + 50, display_height/2+150))
+            msg1 = font.render("You lost!", True, white)
+            msg_rect1 = msg1.get_rect(center=(self.map.width/2, self.map.height/2 - 25))
+            msg2 = font.render("Press Q to quit, or SPACE to play again", True, white)
+            msg_rect2 = msg2.get_rect(center=(self.map.width/2, self.map.height/2 + 25))
+
+            msg3 = font.render("Score: " + str(len(self.snake.positions)), True, white)
+            msg_rect3 = msg3.get_rect(center=(self.map.width/2, self.map.height/2+150))
             self.display.blit(self.background, (0, 0))
             self.display.blit(msg1, msg_rect1)
             self.display.blit(msg2, msg_rect2)
+            self.display.blit(msg3, msg_rect3)
             
             pygame.display.update()
             
