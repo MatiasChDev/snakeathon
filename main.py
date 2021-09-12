@@ -69,8 +69,6 @@ def gameLoop():
         
         while game_lost == True:
             time_delta = clock.tick(60)/1000.0
-            # window_surface.fill(black)
-            # message("You lost! Press Q to quit, or C to play again", red)
             window_surface.blit(background, (0, 0))
             play_again.show()
             quit_game.show()
