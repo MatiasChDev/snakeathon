@@ -23,7 +23,6 @@ clock = pygame.time.Clock()
 
 viewOffset = math.tan(fov)*view_distance
 gradientStep = 255/view_circle_size
-print(gradientStep)
 
 def message(text, color):
     msg = font.render(text, True, color)
