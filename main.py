@@ -63,7 +63,8 @@ def gameLoop():
     xFoodPos,yFoodPos = generateFoodPosition(snake_list)
 
     while not game_over:
-
+        
+            
         if (xPos >= display_width or xPos < 0 or yPos >= display_height or yPos < 0):
             game_lost = True
         

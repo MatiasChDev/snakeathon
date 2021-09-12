@@ -1,5 +1,7 @@
 from tiles import *
+from colors import *
 from constants import tileSize
+import random
 def map_from_csv(file_name):
     TILE_CODES = {
         "O": Base,
@@ -42,3 +44,25 @@ class Map:
         for row in self.tiles:
             for tile in row:
                 tile.render(display)
+    def moveUp(self):
+        print("moving down")
+        for y in range(1,len(self.tiles) -1):
+            row = self.tiles[y]
+            for x in range(1,len(row) - 1):
+                tile = row[x]
+                if(tile.__class__.__name__ == "Wall"):
+                    tile.y-=1
+                    self.tiles[y-1][x] = tile
+                    row[x] = Base(tile.x,tile.y + 1,tile.z,white)
+
+            # spawn new walls
+        for x in range(3):
+            ran = round(random.randrange(1,self.tile_width))
+            self.tiles[self.tile_height - 2 ][ran] = Wall(ran,self.tile_height - 2,1)
+
+
+
+
+
+
+                    

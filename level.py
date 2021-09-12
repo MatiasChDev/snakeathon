@@ -1,3 +1,4 @@
+from pygame import display
 from snake import Snake
 from maps import *
 from constants import *
@@ -12,7 +13,7 @@ GAME_OVER = 3
 
 
 class Level:
-
+    tick = 0
     def __init__(self, name, map_name) -> None:
         self.name = name
         self.map = map_from_csv(map_name + ".csv")
@@ -100,7 +101,12 @@ class Level:
     def level_loop(self):
 
        
-        
+        self.tick+=1
+        if(self.tick % 30 == 0):
+            self.map.moveUp()
+            self.map.render(self.display)
+            pygame.draw.rect(self.display, colors.red, position_to_pixel([self.xFoodPos, self.yFoodPos],1))
+            
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.status = GAME_OVER
@@ -125,7 +131,7 @@ class Level:
         
         next_position = self.snake.get_next_position()
         next_tile = self.tile_at(next_position[0],next_position[1])
-        print(next_tile)
+
         if (not next_tile.allow_through(self.snake)) or (self.snake.direction is not None and next_position in self.snake.positions):
             self.status = LOST
             self.game_lost_screen()
