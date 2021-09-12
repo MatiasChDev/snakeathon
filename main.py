@@ -44,6 +44,13 @@ def message(text, color):
     msg = font.render(text, True, color)
     msg_rect = msg.get_rect(center=(display_width/2, display_height/2))
     window_surface.blit(msg, msg_rect)
+def generateFoodPosition(snakeList):
+    while True:
+        xFoodPos = round(random.randrange(0, display_width - tileSize) / tileSize ) * tileSize
+        yFoodPos = round(random.randrange(0, display_height - tileSize) / tileSize ) * tileSize
+        if(not (xFoodPos,yFoodPos) in (snakeList)):
+            break
+    return xFoodPos,yFoodPos
 
 def gameLoop():
     game_over = False
@@ -59,9 +66,8 @@ def gameLoop():
     queue = []
     snake_list = []
     lengthOfSnake = 1
-    
-    xFoodPos = round(random.randrange(0, display_width - tileSize) / tileSize ) * tileSize
-    yFoodPos = round(random.randrange(0, display_height - tileSize) / tileSize ) * tileSize
+
+    xFoodPos,yFoodPos = generateFoodPosition(snake_list)
 
     while not game_over:
 
@@ -148,8 +154,7 @@ def gameLoop():
         pygame.display.update()
         
         if xPos == xFoodPos and yPos == yFoodPos:
-            xFoodPos = round(random.randrange(0, display_width - tileSize) / tileSize ) * tileSize
-            yFoodPos = round(random.randrange(0, display_height - tileSize) / tileSize ) * tileSize
+            xFoodPos,yFoodPos = generateFoodPosition(snake_list)
             lengthOfSnake += 1
         clock.tick(gameSpeed)
 
