@@ -40,12 +40,10 @@ class Map:
         self.tiles = tiles
     
     def render(self, display):
-        print("render map")
         for row in self.tiles:
             for tile in row:
                 tile.render(display)
     def moveUp(self):
-        print("moving down")
         for y in range(1,len(self.tiles) -1):
             row = self.tiles[y]
             for x in range(1,len(row) - 1):
