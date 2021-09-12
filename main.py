@@ -4,7 +4,6 @@ import random
 import math
 from colors import *
 from constants import *
-import pygame_gui
 import level
 
 pygame.init()
@@ -16,10 +15,6 @@ background.fill(pygame.Color(grey))
 pygame.display.set_caption('Snake game')
 pygame.display.update()
 
-manager = pygame_gui.UIManager((display_width, display_height))
-hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2 - 50, display_height/2 - 25), (100, 50)),
-                                             text='Start Game',
-                                             manager=manager)
 game_over = False
 
 font = pygame.font.SysFont(None, 50)
@@ -139,37 +134,14 @@ def gameLoop():
             surf1 = pygame.Surface((display_width, display_height), pygame.SRCALPHA)
             surf2 = pygame.Surface((display_width, display_height), pygame.SRCALPHA)
             surf3 = pygame.Surface((display_width, display_height), pygame.SRCALPHA)
-            surf4 = pygame.Surface((display_width, display_height), pygame.SRCALPHA) 
             pygame.draw.circle(surf1, (255, 0, 0, 255), (xPos + tileSize/2,yPos + tileSize/2), view_distance)
-            pygame.draw.polygon(surf2, (0, 0, 0, 120), [(0,0),(0,display_height),(display_width,display_height),(display_width,0)])
             
             for x in range(view_circle_size):
                 pygame.draw.circle(surf3, (0, 0, 0, gradientStep* x), (xPos + tileSize/2,yPos + tileSize/2), view_circle_size - x)
 
-            for x in range(view_distance):
-                pygame.draw.circle(surf4, (0, 0, 0, (255/view_distance)* x), (xPos + tileSize/2,yPos + tileSize/2), view_distance - x)
-
-            if(xChange == 0):
-                if(yChange > 0): #moving down
-                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + viewOffset,yPos + tileSize/2 + view_distance),(xPos + tileSize/2 - viewOffset,yPos + tileSize/2 + view_distance)])
-                else: #moving up
-                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + viewOffset,yPos + tileSize/2 - view_distance),(xPos + tileSize/2 - viewOffset,yPos + tileSize/2 - view_distance)])
-            if(yChange == 0):
-                if(xChange > 0): #moving right
-                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + view_distance,yPos + tileSize/2 - viewOffset),(xPos + tileSize/2 + view_distance,yPos + tileSize/2 + viewOffset)])
-                else: #moving left
-                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 - view_distance,yPos + tileSize/2 - viewOffset),(xPos + tileSize/2 - view_distance,yPos + tileSize/2 + viewOffset)])
-            
-            
+           
             surf1.blit(surf3, (0, 0), special_flags = pygame.BLEND_RGBA_MIN)
             surf3.blit(surf1, (0, 0), special_flags = pygame.BLEND_RGBA_SUB)
-
-            surf1.blit(surf2, (0, 0), special_flags = pygame.BLEND_RGBA_MIN)
-            surf2.blit(surf1, (0, 0), special_flags = pygame.BLEND_RGBA_SUB)
-
-            surf1.blit(surf2, (0, 0), special_flags = pygame.BLEND_RGBA_MIN)
-            surf2.blit(surf4, (0, 0), special_flags = pygame.BLEND_RGBA_SUB)
-
             window_surface.blit(surf2,(0,0))
         pygame.display.update()
         
@@ -189,26 +161,16 @@ while is_running:
         if event.type == pygame.QUIT:
             is_running = False
             
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == hello_button:
-                    hello_button.hide()
-                    level.Level("Level Test","test_map")
-                    pygame.init()
-
-                    window_surface = pygame.display.set_mode((display_width, display_height))
-                    background = pygame.Surface((display_width, display_height))
-                    background.fill(pygame.Color(grey))
-
-                    pygame.display.set_caption('Snake game')
-                    pygame.display.update()
-                    hello_button.show()
-            
-        manager.process_events(event)
-    
-    manager.update(time_delta)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                level.Level("Level Test","test_map")
+                pygame.init()
+                window_surface = pygame.display.set_mode((display_width, display_height))
+                background = pygame.Surface((display_width, display_height))
+                background.fill(pygame.Color(grey))
+                pygame.display.set_caption('Snake game')
+                pygame.display.update()
     
     window_surface.blit(background, (0, 0))
-    manager.draw_ui(window_surface)
-    
+    message("Press space to start.", blue)
     pygame.display.update()

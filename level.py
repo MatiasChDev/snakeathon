@@ -3,7 +3,6 @@ from snake import Snake
 from maps import *
 from constants import *
 import colors, random
-import pygame_gui
 
 
 # STATUSES
@@ -76,21 +75,7 @@ class Level:
         self.background.fill(pygame.Color(colors.dark_red))
         pygame.display.set_caption('Snake game | ' + self.name)
         pygame.display.update()
-        self.manager = pygame_gui.UIManager((self.map.width, self.map.height))
 
-        self.play_again = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((self.map.width / 2 - 50, self.map.height / 2 - 75), (100, 50)),
-            text='Play again',
-            manager=self.manager
-        )
-
-        self.quit_game = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((self.map.width / 2 - 50, self.map.height / 2 + 25), (100, 50)),
-            text='Exit game',
-            manager=self.manager
-        )
-        self.play_again.hide()
-        self.quit_game.hide()
         self.map.render(self.display)
         self.snake = Snake(self.display, (int(self.map.tile_width / 2), int(self.map.tile_height / 2)))
         self.queue = []
@@ -152,29 +137,25 @@ class Level:
         while self.status == LOST:
             time_delta = self.clock.tick(60)/1000.0
             # window_surface.fill(black)
-            # message("You lost! Press Q to quit, or C to play again", red)
-            
+            font = pygame.font.SysFont(None, 25)
+            msg1 = font.render("You lost! Press Q to quit, or SPACE to play again", True, blue)
+            msg_rect1 = msg1.get_rect(center=(display_width/2 + 50, display_height/2))
+            msg2 = font.render("Score: " + str(len(self.snake.positions)), True, blue)
+            msg_rect2 = msg2.get_rect(center=(display_width/2 + 50, display_height/2+150))
             self.display.blit(self.background, (0, 0))
-            self.play_again.show()
-            self.quit_game.show()
+            self.display.blit(msg1, msg_rect1)
+            self.display.blit(msg2, msg_rect2)
             
-            self.manager.update(time_delta)
-            
-            self.manager.draw_ui(self.display)
             pygame.display.update()
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.status = GAME_OVER
-                if event.type == pygame.USEREVENT:
-                    if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                        if event.ui_element == self.play_again:
-                            self.play_again.hide()
-                            self.quit_game.hide()
-                            self.reset_level()
-                        if event.ui_element == self.quit_game:
-                            self.status = GAME_OVER
-                self.manager.process_events(event)
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.reset_level()
+                    if event.key == pygame.K_q:
+                        self.status = GAME_OVER
                         
             
         

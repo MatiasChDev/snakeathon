@@ -56,9 +56,10 @@ class Map:
                     row[x] = Base(tile.x,tile.y + 1,tile.z,white)
 
             # spawn new walls
-        for x in range(3):
-            ran = round(random.randrange(1,self.tile_width))
-            self.tiles[self.tile_height - 2 ][ran] = Wall(ran,self.tile_height - 2,1)
+        numWalls = round(random.randrange(1,5))
+        ran = round(random.randrange(1,self.tile_width - numWalls))
+        for x in range(numWalls):
+            self.tiles[self.tile_height - 2 ][ran + x] = Wall(ran + x,self.tile_height - 2,1)
 
 
 
