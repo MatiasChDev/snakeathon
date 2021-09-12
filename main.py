@@ -29,9 +29,6 @@ clock = pygame.time.Clock()
 viewOffset = math.tan(fov)*view_distance
 gradientStep = 255/view_circle_size
 print(gradientStep)
-def draw_snake(tileSize, snake_list):
-    for x in snake_list:
-        pygame.draw.rect(window_surface, white, [x[0]+1, x[1]+1, tileSize-2, tileSize-2])
 
 def message(text, color):
     msg = font.render(text, True, color)
@@ -144,7 +141,7 @@ def gameLoop():
             surf3 = pygame.Surface((display_width, display_height), pygame.SRCALPHA)
             surf4 = pygame.Surface((display_width, display_height), pygame.SRCALPHA) 
             pygame.draw.circle(surf1, (255, 0, 0, 255), (xPos + tileSize/2,yPos + tileSize/2), view_distance)
-            pygame.draw.polygon(surf2, (0, 0, 0, 255), [(0,0),(0,display_height),(display_width,display_height),(display_width,0)])
+            pygame.draw.polygon(surf2, (0, 0, 0, 120), [(0,0),(0,display_height),(display_width,display_height),(display_width,0)])
             
             for x in range(view_circle_size):
                 pygame.draw.circle(surf3, (0, 0, 0, gradientStep* x), (xPos + tileSize/2,yPos + tileSize/2), view_circle_size - x)

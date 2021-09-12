@@ -5,6 +5,7 @@ from constants import *
 import colors, random
 import pygame_gui
 
+
 # STATUSES
 RUNNING = 0
 LOST = 1
@@ -40,16 +41,19 @@ class Level:
                 break
         self.xFoodPos = newXFoodPos
         self.yFoodPos = newYFoodPos
+        self.render_food()
+    def render_food(self):
         pygame.draw.rect(self.display, colors.red, position_to_pixel([self.xFoodPos, self.yFoodPos],1))
 
     def re_render_objects(self, eaten):
         """Derender moving objects"""
-        self.snake.render()
+        self.map.render(self.display)
+        self.snake.render(self.map)
 
         if eaten:
-            food_tile = self.tile_at(self.xFoodPos,self.yFoodPos)
-            pygame.draw.rect(self.display, food_tile.color, position_to_pixel([self.xFoodPos, self.yFoodPos],1))
             self.new_food()
+        else:
+            self.render_food()
         pygame.display.update()
 
     def reset_level(self):
@@ -116,6 +120,7 @@ class Level:
 
         if len(self.queue) != 0:
             key = self.queue[0]
+            direction = None
             if key == pygame.K_UP:
                 direction = Directions.UP
             if key == pygame.K_RIGHT:
@@ -137,7 +142,6 @@ class Level:
             self.game_lost_screen()
             return 0
         eaten = (next_position[0] == self.xFoodPos) and (next_position[1] == self.yFoodPos)
-        self.snake.de_render(self.map.tiles)
         self.snake.move(eaten)
         self.re_render_objects(eaten)
         self.clock.tick(gameSpeed)
