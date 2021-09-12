@@ -1,3 +1,3 @@
 To run the game do:
 
-python main.py
+```python main.py```
