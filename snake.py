@@ -29,7 +29,7 @@ class Snake:
     
     def change_direction(self, direction):
         print(direction)
-        if constants.Directions.opposite_direction(direction) != self.direction:
+        if (len(self.positions) == 1) or (constants.Directions.opposite_direction(direction) != self.direction):
             self.direction = direction
 
     def fall(self):

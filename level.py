@@ -19,6 +19,9 @@ class Level:
         
         self.status = RUNNING
         self.start()
+
+    def tile_at(self, x,y):
+        return self.map.tiles[y][x]
     
     def message(self, text, color):
 
@@ -26,19 +29,24 @@ class Level:
         msg = font.render(text, True, color)
         msg_rect = msg.get_rect(center=(self.map.tile_width*(tileSize/2), self.map.tile_width*(tileSize/2)))
         self.display.blit(msg, msg_rect)
-        
+    
     def new_food(self):
-        self.xFoodPos = random.randrange(0, self.map.tile_width - 1)
-        self.yFoodPos = random.randrange(0, self.map.tile_height - 1)
+        while True:
+            newXFoodPos = random.randrange(0, self.map.tile_width - 1)
+            newYFoodPos = random.randrange(0, self.map.tile_height - 1)
+
+            if(not (newXFoodPos, newYFoodPos) in (self.snake.positions)) and self.tile_at(newXFoodPos,newYFoodPos).allow_through(self.snake):
+                break
+        self.xFoodPos = newXFoodPos
+        self.yFoodPos = newYFoodPos
         pygame.draw.rect(self.display, colors.red, position_to_pixel([self.xFoodPos, self.yFoodPos],1))
 
     def re_render_objects(self, eaten):
         """Derender moving objects"""
-        tiles = self.map.tiles
         self.snake.render()
 
         if eaten:
-            food_tile = tiles[self.yFoodPos][self.xFoodPos]
+            food_tile = self.tile_at(self.xFoodPos,self.yFoodPos)
             pygame.draw.rect(self.display, food_tile.color, position_to_pixel([self.xFoodPos, self.yFoodPos],1))
             self.new_food()
         pygame.display.update()
@@ -72,7 +80,6 @@ class Level:
         while self.status != GAME_OVER:
             self.level_loop()
         pygame.quit()
-        quit()
     def level_loop(self):
 
        
@@ -95,12 +102,14 @@ class Level:
             if key == pygame.K_LEFT:
                 direction = Directions.LEFT
             
-            self.snake.change_direction(direction)
+            if direction is not None:
+                self.snake.change_direction(direction)
             del self.queue[0]
         
         next_position = self.snake.get_next_position()
-        print(self.map.tiles[next_position[1]][next_position[0]])
-        if not self.map.tiles[next_position[1]][next_position[0]].allow_through(self.snake):
+        next_tile = self.tile_at(next_position[0],next_position[1])
+        print(next_tile)
+        if not next_tile.allow_through(self.snake):
             self.status = LOST
             self.game_lost_screen()
             return 0
@@ -121,5 +130,4 @@ class Level:
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                     self.reset_level()
             pygame.display.update()
-print(-1 % 2)
-Level("Level Test","test_map")
+
