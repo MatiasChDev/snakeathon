@@ -163,7 +163,8 @@ while is_running:
             
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                level.Level("Level Test","test_map")
+                
+                level.Level("Level Test")
                 pygame.init()
                 window_surface = pygame.display.set_mode((display_width, display_height))
                 background = pygame.Surface((display_width, display_height))

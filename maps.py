@@ -2,14 +2,29 @@ from tiles import *
 from colors import *
 from constants import tileSize
 import random
-def map_from_csv(file_name):
+import sys
+import os
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+def map_from_csv():
+    ran_map = random.randrange(0,2)
+    maps = ["test_map","test_map2"]
+    file_name = maps[ran_map]
     TILE_CODES = {
         "O": Base,
         "W": Wall,
         "B": Bridge,
         "S": Stair
     }
-    f = open(file_name, "r")
+    f = open(resource_path(file_name + ".csv"), "r")
     lines = f.readlines()
     tiles = []
     x=0
@@ -28,7 +43,7 @@ def map_from_csv(file_name):
             x+=1
         tiles.append(row_tiles)
         y+=1
-    return Map("Test",tiles)
+    return Map(file_name,tiles)
 
 class Map:
     def __init__(self,name,tiles) -> None:

@@ -14,10 +14,9 @@ GAME_OVER = 3
 
 class Level:
     tick = 0
-    def __init__(self, name, map_name) -> None:
+    def __init__(self, name) -> None:
         self.name = name
-        self.map_name = map_name + ".csv"
-        self.map = map_from_csv(self.map_name)
+        self.map = map_from_csv()
         
         self.status = RUNNING
         self.start()
@@ -57,9 +56,13 @@ class Level:
         pygame.display.update()
 
     def reset_level(self):
-        self.map = map_from_csv(self.map_name)
+        self.map = map_from_csv()
         self.snake.return_to_initial()
         self.map.render(self.display)
+        self.display = pygame.display.set_mode((self.map.width, self.map.height))
+        self.background = pygame.Surface((self.map.width, self.map.height))
+        self.background.fill(pygame.Color(colors.dark_red))
+        pygame.display.set_caption('Snake game | ' + self.map.name)
         pygame.display.update()
         self.new_food()
         self.queue = []
@@ -73,7 +76,7 @@ class Level:
         self.display = pygame.display.set_mode((self.map.width, self.map.height))
         self.background = pygame.Surface((self.map.width, self.map.height))
         self.background.fill(pygame.Color(colors.dark_red))
-        pygame.display.set_caption('Snake game | ' + self.name)
+        pygame.display.set_caption('Snake game | ' + self.map.name)
         pygame.display.update()
 
         self.map.render(self.display)
