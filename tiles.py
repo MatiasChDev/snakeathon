@@ -1,18 +1,13 @@
 import pygame
 import colors
-class State:
-    ALIVE = 0
-    CRASHED = 1
-    FELL = 2
-    HIT = 3
 
 class Tile:
     """A tile with x and y position"""
-    def __init__(self,x,y,z, colour) -> None:
+    def __init__(self,x,y,z, color) -> None:
         self.x = x
         self.y = y
         self.z = z
-        self.colour = colour
+        self.color = color
     def allow_fall(self,snake):
         return False
     def allow_through(self,snake):
@@ -20,12 +15,15 @@ class Tile:
     
     def died(self, snake):
         """True if snake is  in same tile and either its a wall or the tile is in another elevation(except bridges)"""
-        snake_z =  snake.get_elevation()
-        if snake_z > self.z and not self.allow_fall():
-            return State.FELL
+        
+        if (snake.z > self.z) and not self.allow_fall():
+            return snake.fall()
     
     def render(self, display):
-        pygame.draw.rect(display, self.colour, [self.x*20, self.y*20, 20, 20])
+        pygame.draw.rect(display, self.color, [self.x*20, self.y*20, 20, 20])
+    
+    def __str__(self) -> str:
+        return  self.__class__.__name__ + " at:(" + str(self.x) + "," + str(self.y) + "," + str(self.z) + ")"
 
 class Base(Tile):
     """The base tile"""
@@ -33,7 +31,7 @@ class Base(Tile):
         super().__init__(x,y,z,colour)
 
     def allow_through(self,snake):
-        return snake.get_elevation() >= self.z
+        return snake.z >= int(self.z)
     
 
 class Wall(Tile):
@@ -42,12 +40,7 @@ class Wall(Tile):
         super().__init__(x,y,z,colors.black)
 
 
-DIRECTIONS = {
-        "UP":0,
-        "RIGHT":1,
-        "DOWN":2,
-        "LEFT":3
-    }
+
 
 class Stair(Base):
     """A stair tile to change elevation level"""

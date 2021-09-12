@@ -1,4 +1,5 @@
 from tiles import *
+from constants import tileSize
 def map_from_csv(file_name):
     TILE_CODES = {
         "O": Base,
@@ -30,27 +31,14 @@ def map_from_csv(file_name):
 class Map:
     def __init__(self,name,tiles) -> None:
         self.name = name
-        self.height = len(tiles)
-        self.width = len(tiles[0])
+        self.tile_height = len(tiles)
+        self.tile_width = len(tiles[0])
+        self.height = tileSize*self.tile_height
+        self.width = tileSize*self.tile_width
         self.tiles = tiles
     
-    def render(self):
-        print(self.width,self.height)
-        display = pygame.display.set_mode((20*self.width, 20*self.height))
+    def render(self, display):
+        print("render map")
         for row in self.tiles:
             for tile in row:
                 tile.render(display)
-        pygame.display.set_caption('Snake game')
-        clock = pygame.time.Clock()
-        game_over = False
-        while not game_over:
-            pygame.display.update()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    game_over = True
-        pygame.quit()
-pygame.init()
-test_map = map_from_csv("test_map.csv")
-test_map.render()
-test_map = map_from_csv("test_map2.csv")
-test_map.render()
