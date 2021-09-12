@@ -16,20 +16,24 @@ pygame.display.set_caption('Snake game')
 pygame.display.update()
 
 manager = pygame_gui.UIManager((display_width, display_height))
-hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2-50, display_height/2-25), (100, 50)),
                                              text='Start Game',
                                              manager=manager)
 
-play_again = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+play_again = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2-50, display_height/2-25), (100, 50)),
                                              text='Play again',
                                              manager=manager)
 
-quit_game = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 350), (100, 50)),
+quit_game = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2-50, display_height/2+100), (100, 50)),
                                              text='Exit game',
                                              manager=manager)
 
+score_text = pygame_gui.elements.ui_text_box.UITextBox(relative_rect=pygame.Rect((display_width/2-50, display_height/2-150), (100, 50)),
+                                             html_text='Score: ',
+                                             manager=manager)
 play_again.hide()
 quit_game.hide()
+score_text.hide()
 
 game_over = False
 
@@ -46,7 +50,7 @@ def draw_snake(tileSize, snake_list):
 
 def message(text, color):
     msg = font.render(text, True, color)
-    msg_rect = msg.get_rect(center=(display_width/2, display_height/2))
+    msg_rect = msg.get_rect(center=(display_width/2, display_height/2 - 100))
     window_surface.blit(msg, msg_rect)
 def generateFoodPosition(snakeList):
     while True:
@@ -81,13 +85,13 @@ def gameLoop():
         while game_lost == True:
             time_delta = clock.tick(60)/1000.0
             # window_surface.fill(black)
-            # message("You lost! Press Q to quit, or C to play again", red)
             window_surface.blit(background, (0, 0))
             play_again.show()
             quit_game.show()
             manager.update(time_delta)
             window_surface.blit(background, (0, 0))
             manager.draw_ui(window_surface)
+            message("Score: " + str(lengthOfSnake), blue)
             pygame.display.update()
             
             for event in pygame.event.get():
@@ -216,5 +220,4 @@ while is_running:
     
     window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)
-    
     pygame.display.update()
