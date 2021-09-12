@@ -4,7 +4,6 @@ import random
 import math
 from colors import *
 from constants import *
-import pygame_gui
 import level
 
 pygame.init()
@@ -16,10 +15,6 @@ background.fill(pygame.Color(grey))
 pygame.display.set_caption('Snake game')
 pygame.display.update()
 
-manager = pygame_gui.UIManager((display_width, display_height))
-hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2 - 50, display_height/2 - 25), (100, 50)),
-                                             text='Start Game',
-                                             manager=manager)
 game_over = False
 
 font = pygame.font.SysFont(None, 50)
@@ -166,26 +161,16 @@ while is_running:
         if event.type == pygame.QUIT:
             is_running = False
             
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == hello_button:
-                    hello_button.hide()
-                    level.Level("Level Test","test_map")
-                    pygame.init()
-
-                    window_surface = pygame.display.set_mode((display_width, display_height))
-                    background = pygame.Surface((display_width, display_height))
-                    background.fill(pygame.Color(grey))
-
-                    pygame.display.set_caption('Snake game')
-                    pygame.display.update()
-                    hello_button.show()
-            
-        manager.process_events(event)
-    
-    manager.update(time_delta)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                level.Level("Level Test","test_map")
+                pygame.init()
+                window_surface = pygame.display.set_mode((display_width, display_height))
+                background = pygame.Surface((display_width, display_height))
+                background.fill(pygame.Color(grey))
+                pygame.display.set_caption('Snake game')
+                pygame.display.update()
     
     window_surface.blit(background, (0, 0))
-    manager.draw_ui(window_surface)
-    
+    message("Press space to start.", blue)
     pygame.display.update()
