@@ -10,7 +10,7 @@ pygame.init()
 
 window_surface = pygame.display.set_mode((display_width, display_height))
 background = pygame.Surface((display_width, display_height))
-background.fill(pygame.Color(black))
+background.fill(pygame.Color(grey))
 
 pygame.display.set_caption('Snake game')
 pygame.display.update()
@@ -172,14 +172,14 @@ def gameLoop():
 
             if(xChange == 0):
                 if(yChange > 0): #moving down
-                    pygame.draw.polygon(surf3,(255,0,0,255),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + viewOffset,yPos + tileSize/2 + view_distance),(xPos + tileSize/2 - viewOffset,yPos + tileSize/2 + view_distance)])
+                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + viewOffset,yPos + tileSize/2 + view_distance),(xPos + tileSize/2 - viewOffset,yPos + tileSize/2 + view_distance)])
                 else: #moving up
-                    pygame.draw.polygon(surf3,(255,0,0,255),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + viewOffset,yPos + tileSize/2 - view_distance),(xPos + tileSize/2 - viewOffset,yPos + tileSize/2 - view_distance)])
+                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + viewOffset,yPos + tileSize/2 - view_distance),(xPos + tileSize/2 - viewOffset,yPos + tileSize/2 - view_distance)])
             if(yChange == 0):
                 if(xChange > 0): #moving right
-                    pygame.draw.polygon(surf3,(255,0,0,255),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + view_distance,yPos + tileSize/2 - viewOffset),(xPos + tileSize/2 + view_distance,yPos + tileSize/2 + viewOffset)])
+                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + view_distance,yPos + tileSize/2 - viewOffset),(xPos + tileSize/2 + view_distance,yPos + tileSize/2 + viewOffset)])
                 else: #moving left
-                    pygame.draw.polygon(surf3,(255,0,0,255),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 - view_distance,yPos + tileSize/2 - viewOffset),(xPos + tileSize/2 - view_distance,yPos + tileSize/2 + viewOffset)])
+                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 - view_distance,yPos + tileSize/2 - viewOffset),(xPos + tileSize/2 - view_distance,yPos + tileSize/2 + viewOffset)])
             
             
             surf1.blit(surf3, (0, 0), special_flags = pygame.BLEND_RGBA_MIN)
@@ -191,7 +191,7 @@ def gameLoop():
             surf1.blit(surf2, (0, 0), special_flags = pygame.BLEND_RGBA_MIN)
             surf2.blit(surf4, (0, 0), special_flags = pygame.BLEND_RGBA_SUB)
 
-            display.blit(surf2,(0,0))
+            window_surface.blit(surf2,(0,0))
         pygame.display.update()
         
         if xPos == xFoodPos and yPos == yFoodPos:
