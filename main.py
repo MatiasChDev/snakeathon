@@ -3,12 +3,32 @@ import time
 import random
 from colors import *
 from constants import *
+import pygame_gui
 
 pygame.init()
 
-display = pygame.display.set_mode((display_width, display_height))
+window_surface = pygame.display.set_mode((display_width, display_height))
+background = pygame.Surface((display_width, display_height))
+background.fill(pygame.Color(black))
+
 pygame.display.set_caption('Snake game')
 pygame.display.update()
+
+manager = pygame_gui.UIManager((display_width, display_height))
+hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+                                             text='Start Game',
+                                             manager=manager)
+
+play_again = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+                                             text='Play again',
+                                             manager=manager)
+
+quit_game = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 350), (100, 50)),
+                                             text='Exit game',
+                                             manager=manager)
+
+play_again.hide()
+quit_game.hide()
 
 game_over = False
 
@@ -18,12 +38,12 @@ clock = pygame.time.Clock()
 
 def draw_snake(tileSize, snake_list):
     for x in snake_list:
-        pygame.draw.rect(display, black, [x[0]+1, x[1]+1, tileSize-2, tileSize-2])
+        pygame.draw.rect(window_surface, white, [x[0]+1, x[1]+1, tileSize-2, tileSize-2])
 
 def message(text, color):
     msg = font.render(text, True, color)
     msg_rect = msg.get_rect(center=(display_width/2, display_height/2))
-    display.blit(msg, msg_rect)
+    window_surface.blit(msg, msg_rect)
 
 def gameLoop():
     game_over = False
@@ -49,20 +69,38 @@ def gameLoop():
             game_lost = True
         
         while game_lost == True:
-            display.fill(blue)
-            message("You lost! Press Q to quit, or C to play again", red)
+            time_delta = clock.tick(60)/1000.0
+            # window_surface.fill(black)
+            # message("You lost! Press Q to quit, or C to play again", red)
+            window_surface.blit(background, (0, 0))
+            play_again.show()
+            quit_game.show()
+            manager.update(time_delta)
+            window_surface.blit(background, (0, 0))
+            manager.draw_ui(window_surface)
             pygame.display.update()
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     game_over = True
                     game_lost=False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        game_over = True
-                        game_lost=False
-                    if event.key == pygame.K_c:
-                        gameLoop()
+                if event.type == pygame.USEREVENT:
+                    if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                        if event.ui_element == play_again:
+                            gameLoop()
+                        if event.ui_element == quit_game:
+                            game_over = True
+                            game_lost=False
+                        play_again.hide()
+                        quit_game.hide()
+            
+            manager.process_events(event)
+                # if event.type == pygame.KEYDOWN:
+                #     if event.key == pygame.K_q:
+                #         game_over = True
+                #         game_lost=False
+                #     if event.key == pygame.K_c:
+                #         gameLoop()
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -91,10 +129,9 @@ def gameLoop():
         xPos += xChange
         yPos += yChange
 
-        display.fill(blue)
+        window_surface.fill(black)
               
         # Draw food
-        pygame.draw.rect(display, red, [xFoodPos+1, yFoodPos+1, tileSize-2, tileSize-2])
         snake_head = []
         snake_head.append(xPos)
         snake_head.append(yPos)
@@ -104,6 +141,8 @@ def gameLoop():
         
         if snake_head in snake_list[:-1]:
             game_lost=True
+        window_surface.blit(background, (0, 0))
+        pygame.draw.rect(window_surface, red, [xFoodPos+1, yFoodPos+1, tileSize-2, tileSize-2])
         draw_snake(tileSize, snake_list)
         
         pygame.display.update()
@@ -117,5 +156,25 @@ def gameLoop():
     pygame.quit()
     quit()  
 
+is_running = True
 
-gameLoop()
+while is_running:
+    time_delta = clock.tick(60)/1000.0
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            is_running = False
+            
+        if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == hello_button:
+                    hello_button.hide()
+                    gameLoop()
+            
+        manager.process_events(event)
+    
+    manager.update(time_delta)
+    
+    window_surface.blit(background, (0, 0))
+    manager.draw_ui(window_surface)
+    
+    pygame.display.update()
