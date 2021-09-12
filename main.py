@@ -17,21 +17,9 @@ pygame.display.set_caption('Snake game')
 pygame.display.update()
 
 manager = pygame_gui.UIManager((display_width, display_height))
-hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2, display_height/2), (100, 50)),
+hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2 - 50, display_height/2 - 25), (100, 50)),
                                              text='Start Game',
                                              manager=manager)
-
-play_again = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2, display_height/2), (100, 50)),
-                                             text='Play again',
-                                             manager=manager)
-
-quit_game = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_width/2, display_height/2 + 100), (100, 50)),
-                                             text='Exit game',
-                                             manager=manager)
-
-play_again.hide()
-quit_game.hide()
-
 game_over = False
 
 font = pygame.font.SysFont(None, 50)
@@ -208,6 +196,15 @@ while is_running:
                 if event.ui_element == hello_button:
                     hello_button.hide()
                     level.Level("Level Test","test_map")
+                    pygame.init()
+
+                    window_surface = pygame.display.set_mode((display_width, display_height))
+                    background = pygame.Surface((display_width, display_height))
+                    background.fill(pygame.Color(grey))
+
+                    pygame.display.set_caption('Snake game')
+                    pygame.display.update()
+                    hello_button.show()
             
         manager.process_events(event)
     

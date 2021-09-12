@@ -1,8 +1,8 @@
 from snake import Snake
 from maps import *
 from constants import *
-import colors
-import random
+import colors, random
+import pygame_gui
 
 # STATUSES
 RUNNING = 0
@@ -65,13 +65,30 @@ class Level:
     def start(self):
         pygame.init()
         self.display = pygame.display.set_mode((self.map.width, self.map.height))
+        self.background = pygame.Surface((self.map.width, self.map.height))
+        self.background.fill(pygame.Color(colors.dark_red))
+        pygame.display.set_caption('Snake game | ' + self.name)
+        pygame.display.update()
+        self.manager = pygame_gui.UIManager((self.map.width, self.map.height))
+
+        self.play_again = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((self.map.width / 2 - 50, self.map.height / 2 - 75), (100, 50)),
+            text='Play again',
+            manager=self.manager
+        )
+
+        self.quit_game = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((self.map.width / 2 - 50, self.map.height / 2 + 25), (100, 50)),
+            text='Exit game',
+            manager=self.manager
+        )
+        self.play_again.hide()
+        self.quit_game.hide()
         self.map.render(self.display)
         self.snake = Snake(self.display, (int(self.map.tile_width / 2), int(self.map.tile_height / 2)))
         self.queue = []
         self.clock = pygame.time.Clock()
         self.status = RUNNING
-        pygame.display.set_caption('Snake game | ' + self.name)
-        pygame.display.update()
 
         self.new_food()
         self.run_loop()
@@ -121,13 +138,32 @@ class Level:
 
     def game_lost_screen(self):
         while self.status == LOST:
-            self.display.fill(colors.dark_red)
-            self.message("You lost! Press Q to quit, or C to play again", colors.white)
+            time_delta = self.clock.tick(60)/1000.0
+            # window_surface.fill(black)
+            # message("You lost! Press Q to quit, or C to play again", red)
+            
+            self.display.blit(self.background, (0, 0))
+            self.play_again.show()
+            self.quit_game.show()
+            
+            self.manager.update(time_delta)
+            
+            self.manager.draw_ui(self.display)
+            pygame.display.update()
             
             for event in pygame.event.get():
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
+                if event.type == pygame.QUIT:
                     self.status = GAME_OVER
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-                    self.reset_level()
-            pygame.display.update()
+                if event.type == pygame.USEREVENT:
+                    if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                        if event.ui_element == self.play_again:
+                            self.play_again.hide()
+                            self.quit_game.hide()
+                            self.reset_level()
+                        if event.ui_element == self.quit_game:
+                            self.status = GAME_OVER
+                self.manager.process_events(event)
+                        
+            
+        
 
