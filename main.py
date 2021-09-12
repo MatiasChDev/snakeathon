@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+import math
 from colors import *
 from constants import *
 import pygame_gui
@@ -9,7 +10,7 @@ pygame.init()
 
 window_surface = pygame.display.set_mode((display_width, display_height))
 background = pygame.Surface((display_width, display_height))
-background.fill(pygame.Color(black))
+background.fill(pygame.Color(grey))
 
 pygame.display.set_caption('Snake game')
 pygame.display.update()
@@ -36,6 +37,9 @@ font = pygame.font.SysFont(None, 50)
 
 clock = pygame.time.Clock()
 
+viewOffset = math.tan(fov)*view_distance
+gradientStep = 255/view_circle_size
+print(gradientStep)
 def draw_snake(tileSize, snake_list):
     for x in snake_list:
         pygame.draw.rect(window_surface, white, [x[0]+1, x[1]+1, tileSize-2, tileSize-2])
@@ -145,6 +149,43 @@ def gameLoop():
         pygame.draw.rect(window_surface, red, [xFoodPos+1, yFoodPos+1, tileSize-2, tileSize-2])
         draw_snake(tileSize, snake_list)
         
+        
+        if(not (xChange == 0 and  yChange == 0)):
+            surf1 = pygame.Surface((display_width, display_height), pygame.SRCALPHA)
+            surf2 = pygame.Surface((display_width, display_height), pygame.SRCALPHA)
+            surf3 = pygame.Surface((display_width, display_height), pygame.SRCALPHA)
+            surf4 = pygame.Surface((display_width, display_height), pygame.SRCALPHA) 
+            pygame.draw.circle(surf1, (255, 0, 0, 255), (xPos + tileSize/2,yPos + tileSize/2), view_distance)
+            pygame.draw.polygon(surf2, (0, 0, 0, 255), [(0,0),(0,display_height),(display_width,display_height),(display_width,0)])
+            
+            for x in range(view_circle_size):
+                pygame.draw.circle(surf3, (0, 0, 0, gradientStep* x), (xPos + tileSize/2,yPos + tileSize/2), view_circle_size - x)
+
+            for x in range(view_distance):
+                pygame.draw.circle(surf4, (0, 0, 0, (255/view_distance)* x), (xPos + tileSize/2,yPos + tileSize/2), view_distance - x)
+
+            if(xChange == 0):
+                if(yChange > 0): #moving down
+                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + viewOffset,yPos + tileSize/2 + view_distance),(xPos + tileSize/2 - viewOffset,yPos + tileSize/2 + view_distance)])
+                else: #moving up
+                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + viewOffset,yPos + tileSize/2 - view_distance),(xPos + tileSize/2 - viewOffset,yPos + tileSize/2 - view_distance)])
+            if(yChange == 0):
+                if(xChange > 0): #moving right
+                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 + view_distance,yPos + tileSize/2 - viewOffset),(xPos + tileSize/2 + view_distance,yPos + tileSize/2 + viewOffset)])
+                else: #moving left
+                    pygame.draw.polygon(surf3,(255,0,0,150),[(xPos + tileSize/2, yPos + tileSize/2),(xPos + tileSize/2 - view_distance,yPos + tileSize/2 - viewOffset),(xPos + tileSize/2 - view_distance,yPos + tileSize/2 + viewOffset)])
+            
+            
+            surf1.blit(surf3, (0, 0), special_flags = pygame.BLEND_RGBA_MIN)
+            surf3.blit(surf1, (0, 0), special_flags = pygame.BLEND_RGBA_SUB)
+
+            surf1.blit(surf2, (0, 0), special_flags = pygame.BLEND_RGBA_MIN)
+            surf2.blit(surf1, (0, 0), special_flags = pygame.BLEND_RGBA_SUB)
+
+            surf1.blit(surf2, (0, 0), special_flags = pygame.BLEND_RGBA_MIN)
+            surf2.blit(surf4, (0, 0), special_flags = pygame.BLEND_RGBA_SUB)
+
+            window_surface.blit(surf2,(0,0))
         pygame.display.update()
         
         if xPos == xFoodPos and yPos == yFoodPos:
